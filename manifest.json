@@ -1,0 +1,37 @@
+{
+    "manifest_version": 2,
+    "name": "Thêm Phím Tắt-er",
+    "author": "duckimann",
+    "version": "1.0",
+    "icons": {
+		"16": "favicon.png",
+		"48": "favicon.png",
+		"128": "favicon.png"
+	},
+    "background": {
+        "scripts": ["bg.js"],
+        "persistence": false
+    },
+    "commands": {
+		"dlHoverZoomImg": {
+			"description": "Download Ảnh View Trên HoverZoom"
+        },
+        "clickCBtnFB": {
+            "description": "Click Nút Xác Nhận Trên Facebook"
+        },
+        "turnOffFbPostNoti": {
+            "description": "Tắt Thông Báo Post Trên Facebook"
+        },
+        "dlShelf": {
+            "description": "Bật / Tắt Thanh Download (Mặc định: Bật)"
+        }
+	},
+    "permissions": [
+        "tabs",
+        "downloads",
+		"downloads.shelf",
+        "storage",
+        "notifications",
+        "<all_urls>"
+    ]
+}
