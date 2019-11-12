@@ -24,6 +24,9 @@
         },
         "dlShelf": {
             "description": "Bật / Tắt Thanh Download (Mặc định: Bật)"
+        },
+        "dl": {
+            "description": "Download Ảnh (JPG / JPEG / PNG)"
         }
 	},
     "permissions": [

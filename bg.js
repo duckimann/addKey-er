@@ -61,5 +61,10 @@ chrome.commands.onCommand.addListener((a) => {
 				cr.cNoti(`Đã ${(val) ? "Bật" : "Tắt"} Thanh Download.`);
 			});
 			break;
+		case "dl":
+			chrome.tabs.query({active: true}, ([{url: tab}]) => {
+				if (/(jpg|png|jpeg)$/g.test(tab)) cr.dl(tab);
+			});
+			break;
 	}
 });
