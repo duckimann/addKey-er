@@ -13,17 +13,14 @@
         "persistence": false
     },
     "commands": {
-		"dlHoverZoomImg": {
-			"description": "Download Ảnh View Trên HoverZoom"
-        },
         "clickCBtnFB": {
             "description": "Click Nút Xác Nhận Trên Facebook"
         },
-        "turnOffFbPostNoti": {
-            "description": "Tắt Thông Báo Post Trên Facebook"
-        },
         "dlShelf": {
             "description": "Bật / Tắt Thanh Download (Mặc định: Bật)"
+        },
+        "flickrPhotoNewTab": {
+            "description": "Mở ảnh trong tab mới (Flickr Only)"
         },
         "dl": {
             "description": "Download Ảnh (JPG / JPEG / PNG)"

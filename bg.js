@@ -16,6 +16,8 @@ var cr = {
 		});
 	},
 	newTab: (url) => chrome.tabs.create({url: url, selected: true})
+}, Flickr = {
+	getSize: (photoId) => fetch(`https://www.flickr.com/services/rest/?method=flickr.photos.getSizes&api_key=621b3655c517a25e35ec61f6b9e4fbf3&photo_id=${photoId}&format=json&nojsoncallback=1`).then((a) => a.json()).then((a) => a.sizes.size.pop())
 };
 // Run at startup
 chrome.runtime.onStartup.addListener(() => {
@@ -27,7 +29,6 @@ chrome.runtime.onStartup.addListener(() => {
 });
 // Listen on message send to extension
 chrome.runtime.onMessage.addListener((a, b) => {
-	console.log(a);
 	switch(Object.keys(a)[0]) {
 		case "dlImg":
 			cr.dl(a.dlImg);
@@ -43,15 +44,8 @@ chrome.runtime.onMessage.addListener((a, b) => {
 // Listen on command
 chrome.commands.onCommand.addListener((a) => {
 	switch(a) {
-		case "dlHoverZoomImg":
-			chrome.tabs.executeScript({code: `chrome.runtime.sendMessage(chrome.runtime.id, {dlImg: document.querySelector("#hzImg > img").src});`});
-			break;
 		case "clickCBtnFB":
 			chrome.tabs.executeScript({code: `document.querySelector("button.layerConfirm.uiOverlayButton[type='submit']").click();`});
-			break;
-		case "turnOffFbPostNoti":
-			console.log("Off Noti");
-			chrome.tabs.executeScript({code: `((gid, pid, dtoken) => {let a = new FormData(); a.append("group_id", gid); a.append("message_id", pid); a.append("follow", 0); a.append("fb_dtsg", dtoken);fetch("https://www.facebook.com/ajax/litestand/follow_group_post", {method: "POST", body: a}).then((b) => chrome.runtime.sendMessage(chrome.runtime.id, {createNoti: \`\${(b.ok) ? "Đã " : ""}Tắt Thông Báo Post \${pid}\${(b.ok) ? "" : " Không Thành Công"}\`}));})(document.documentElement.outerHTML.match(/(?<=group_id=)\\d+/g)[0], document.querySelector("[name='ft_ent_identifier']").value, document.querySelector('[name="fb_dtsg"]').value);`});
 			break;
 		case "dlShelf":
 			chrome.storage.local.get("dlShelf", ({dlShelf: a}) => {
@@ -61,9 +55,18 @@ chrome.commands.onCommand.addListener((a) => {
 				cr.cNoti(`Đã ${(val) ? "Bật" : "Tắt"} Thanh Download.`);
 			});
 			break;
+		case "flickrPhotoNewTab":
+			console.log("New Tab");
+			chrome.tabs.query({active: true}, ([{url: tab}]) => {
+				let url = new URL(tab);
+				if (url.hostname == "www.flickr.com" && /photos\/.*?\/\d+/g.test(url.pathname)) Flickr.getSize(url.pathname.match(/(?<=photos\/\w+\/)\d+/g).pop()).then((a) => cr.newTab(a.source));
+			});
+			break;
 		case "dl":
 			chrome.tabs.query({active: true}, ([{url: tab}]) => {
+				let url = new URL(tab);
 				if (/(jpg|png|jpeg)$/g.test(tab)) cr.dl(tab);
+				if (url.hostname == "www.flickr.com" && /photos\/.*?\/\d+/g.test(url.pathname)) Flickr.getSize(url.pathname.match(/(?<=photos\/\w+\/)\d+/g).pop()).then((a) => cr.dl(a.source));
 			});
 			break;
 	}
