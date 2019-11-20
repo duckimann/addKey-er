@@ -45,7 +45,7 @@ chrome.runtime.onMessage.addListener((a, b) => {
 chrome.commands.onCommand.addListener((a) => {
 	switch(a) {
 		case "clickCBtnFB":
-			chrome.tabs.executeScript({code: `document.querySelector("button.layerConfirm.uiOverlayButton[type='submit']").click();`});
+			chrome.tabs.executeScript({code: `for (let btn of Array.from(document.querySelectorAll("button.layerConfirm.uiOverlayButton[type='submit']"))) btn.click();`});
 			break;
 		case "dlShelf":
 			chrome.storage.local.get("dlShelf", ({dlShelf: a}) => {
