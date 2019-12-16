@@ -4,8 +4,8 @@ chrome.runtime.onInstalled.addListener(() => {
 	chrome.runtime.setUninstallURL("https://www.facebook.com/100006849889044");
 });
 // Functions
-var cr = {
-	cNoti: (msg) => chrome.notifications.create({type: "basic", iconUrl: "favicon.png", title: "Thêm Phím Tắt-er", message: msg}),
+let create = {
+	noti: (msg) => chrome.notifications.create({type: "basic", iconUrl: "favicon.png", title: "Thêm Phím Tắt-er", message: msg}),
 	dl: (dlUrl) => {
 		chrome.storage.local.get("dlShelf", ({dlShelf: a}) => {
 			if (!a) {
@@ -31,13 +31,13 @@ chrome.runtime.onStartup.addListener(() => {
 chrome.runtime.onMessage.addListener((a, b) => {
 	switch(Object.keys(a)[0]) {
 		case "dlImg":
-			cr.dl(a.dlImg);
+			create.dl(a.dlImg);
 			break;
 		case "createNoti":
-			cr.cNoti(a.createNoti);
+			create.noti(a.createNoti);
 			break;
 		case "newTab":
-			cr.newTab(a.newTab);
+			create.newTab(a.newTab);
 			break;
 	}
 });
@@ -49,24 +49,29 @@ chrome.commands.onCommand.addListener((a) => {
 			break;
 		case "dlShelf":
 			chrome.storage.local.get("dlShelf", ({dlShelf: a}) => {
-				let val = !a;
-				chrome.downloads.setShelfEnabled(val);
-				chrome.storage.local.set({dlShelf: val});
-				cr.cNoti(`Đã ${(val) ? "Bật" : "Tắt"} Thanh Download.`);
+				console.log("Before", a);
+				a = !a;
+				console.log("After", a);
+				chrome.downloads.setShelfEnabled(a);
+				chrome.storage.local.set({dlShelf: a});
+				create.noti(`Đã ${(a) ? "Bật" : "Tắt"} Thanh Download.`);
 			});
 			break;
 		case "flickrPhotoNewTab":
 			console.log("New Tab");
 			chrome.tabs.query({active: true}, ([{url: tab}]) => {
 				let url = new URL(tab);
-				if (url.hostname == "www.flickr.com" && /photos\/.*?\/\d+/g.test(url.pathname)) Flickr.getSize(url.pathname.match(/(?<=photos\/\w+\/)\d+/g).pop()).then((a) => cr.newTab(a.source));
+				if (url.hostname.includes("flickr.com") && /photos\/.*?\/\d+/g.test(url.pathname)) Flickr.getSize(url.pathname.match(/(?<=photos\/\w+\/)\d+/g).pop()).then((a) => create.newTab(a.source));
 			});
 			break;
 		case "dl":
 			chrome.tabs.query({active: true}, ([{url: tab}]) => {
 				let url = new URL(tab);
-				if (/(jpg|png|jpeg)$/g.test(tab)) cr.dl(tab);
-				if (url.hostname == "www.flickr.com" && /photos\/.*?\/\d+/g.test(url.pathname)) Flickr.getSize(url.pathname.match(/(?<=photos\/\w+\/)\d+/g).pop()).then((a) => cr.dl(a.source));
+				new Promise((resolve) => {
+					if (/[^\/]+(jpeg|jpg|png)($|#|\?)/g.test(tab)) resolve(tab);
+					if (url.hostname.includes("flickr.com") && /photos\/.*?\/\d+/g.test(url.pathname)) Flickr.getSize(url.pathname.match(/(?<=photos\/\w+\/)\d+/g).pop()).then((a) => resolve(a.source));
+				})
+				.then((result) => create.dl(result));
 			});
 			break;
 	}
