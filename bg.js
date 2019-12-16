@@ -29,17 +29,12 @@ chrome.runtime.onStartup.addListener(() => {
 });
 // Listen on message send to extension
 chrome.runtime.onMessage.addListener((a, b) => {
-	switch(Object.keys(a)[0]) {
-		case "dlImg":
-			create.dl(a.dlImg);
-			break;
-		case "createNoti":
-			create.noti(a.createNoti);
-			break;
-		case "newTab":
-			create.newTab(a.newTab);
-			break;
-	}
+	let func = {
+		dlImg: () => create.dl(a.dlImg),
+		createNoti: () => create.noti(a.createNoti),
+		newTab: () => create.newTab(a.newTab)
+	};
+	func[Object.keys(a)[0]]();
 });
 // Listen on command
 chrome.commands.onCommand.addListener((a) => {
@@ -70,8 +65,7 @@ chrome.commands.onCommand.addListener((a) => {
 				new Promise((resolve) => {
 					if (/[^\/]+(jpeg|jpg|png)($|#|\?)/g.test(tab)) resolve(tab);
 					if (url.hostname.includes("flickr.com") && /photos\/.*?\/\d+/g.test(url.pathname)) Flickr.getSize(url.pathname.match(/(?<=photos\/\w+\/)\d+/g).pop()).then((a) => resolve(a.source));
-				})
-				.then((result) => create.dl(result));
+				}).then((result) => create.dl(result));
 			});
 			break;
 	}
