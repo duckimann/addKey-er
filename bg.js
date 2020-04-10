@@ -44,13 +44,15 @@ chrome.commands.onCommand.addListener((a) => {
 				var button = document.querySelector("button.layerConfirm.uiOverlayButton[type='submit']");
 				if(button == null){
 				    button = document.querySelector("a.layerCancel[action='cancel']");
-				    var array_label = document.querySelectorAll("label.uiInputLabelLabel");
-				    var array_length = array_label.length;
-				    var last_label = array_label[array_length - 1];
-				    last_label.click();
+				   
+				}
+				var array_label = document.querySelectorAll("label.uiInputLabelLabel");
+				var array_length = array_label.length;
+				for (var i = 0; i < array_length; i++) {
+					array_label[i].click();
 				}
 				button.click();
-				`});
+			`});
 			break;
 		case "dlShelf":
 			chrome.storage.local.get("dlShelf", ({dlShelf: a}) => {
