@@ -41,14 +41,9 @@ chrome.commands.onCommand.addListener((a) => {
 	let commands = {
 		clickCBtnFB: () => {
 			chrome.tabs.executeScript({code: `
-				var button = document.querySelector("button.layerConfirm.uiOverlayButton[type='submit']");
-<<<<<<< HEAD
-				if (!button) {
-					button = document.querySelector("a.layerCancel[action='cancel']");
-					let array_label = document.querySelectorAll("label.uiInputLabelLabel"),
-						last_label = array_label[array_label.length - 1];
-					last_label.click();
-				}
+				var button = document.querySelector("button.layerConfirm.uiOverlayButton[type='submit']") || document.querySelector("a.layerCancel[action='cancel']"),
+					array_label = document.querySelectorAll("label.uiInputLabelLabel"),
+				for (var i = 0; i < array_label.length; i++) array_label[i].click();
 				button.click();
 			`});
 		},
@@ -62,21 +57,6 @@ chrome.commands.onCommand.addListener((a) => {
 			});
 		},
 		dlShelf: () => {
-=======
-				if(button == null){
-				    button = document.querySelector("a.layerCancel[action='cancel']");
-				   
-				}
-				var array_label = document.querySelectorAll("label.uiInputLabelLabel");
-				var array_length = array_label.length;
-				for (var i = 0; i < array_length; i++) {
-					array_label[i].click();
-				}
-				button.click();
-			`});
-			break;
-		case "dlShelf":
->>>>>>> 840d05f00b54e330cca2dc1e094bb13769142737
 			chrome.storage.local.get("dlShelf", ({dlShelf: a}) => {
 				console.log("Before", a);
 				a = !a;
@@ -95,4 +75,18 @@ chrome.commands.onCommand.addListener((a) => {
 		},
 	};
 	commands[a]();
+	switch(a) {
+		case "clickCBtnFB":
+			
+			break;
+		case "dlShelf":
+			
+			break;
+		case "flickrPhotoNewTab":
+			
+			break;
+		case "dl":
+			
+			break;
+	}
 });
