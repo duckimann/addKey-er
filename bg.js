@@ -38,21 +38,29 @@ chrome.runtime.onMessage.addListener((a, b) => {
 });
 // Listen on command
 chrome.commands.onCommand.addListener((a) => {
-	switch(a) {
-		case "clickCBtnFB":
+	let commands = {
+		clickCBtnFB: () => {
 			chrome.tabs.executeScript({code: `
 				var button = document.querySelector("button.layerConfirm.uiOverlayButton[type='submit']");
-				if(button == null){
-				    button = document.querySelector("a.layerCancel[action='cancel']");
-				    var array_label = document.querySelectorAll("label.uiInputLabelLabel");
-				    var array_length = array_label.length;
-				    var last_label = array_label[array_length - 1];
-				    last_label.click();
+				if (!button) {
+					button = document.querySelector("a.layerCancel[action='cancel']");
+					let array_label = document.querySelectorAll("label.uiInputLabelLabel"),
+						last_label = array_label[array_label.length - 1];
+					last_label.click();
 				}
 				button.click();
-				`});
-			break;
-		case "dlShelf":
+			`});
+		},
+		dl: () => {
+			chrome.tabs.query({active: true}, ([{url: tab}]) => {
+				let url = new URL(tab);
+				new Promise((resolve) => {
+					if (/[^\/]+(jpeg|jpg|png)($|#|\?)/g.test(tab)) resolve(tab);
+					if (url.hostname.includes("flickr.com") && /photos\/.*?\/\d+/g.test(url.pathname)) Flickr.getSize(url.pathname.match(/(?<=photos\/\w+\/)\d+/g).pop()).then((a) => resolve(a.source));
+				}).then((result) => create.dl(result));
+			});
+		},
+		dlShelf: () => {
 			chrome.storage.local.get("dlShelf", ({dlShelf: a}) => {
 				console.log("Before", a);
 				a = !a;
@@ -61,22 +69,14 @@ chrome.commands.onCommand.addListener((a) => {
 				chrome.storage.local.set({dlShelf: a});
 				create.noti(`Đã ${(a) ? "Bật" : "Tắt"} Thanh Download.`);
 			});
-			break;
-		case "flickrPhotoNewTab":
+		},
+		flickrPhotoNewTab: () => {
 			console.log("New Tab");
 			chrome.tabs.query({active: true}, ([{url: tab}]) => {
 				let url = new URL(tab);
 				if (url.hostname.includes("flickr.com") && /photos\/.*?\/\d+/g.test(url.pathname)) Flickr.getSize(url.pathname.match(/(?<=photos\/\w+\/)\d+/g).pop()).then((a) => create.newTab(a.source));
 			});
-			break;
-		case "dl":
-			chrome.tabs.query({active: true}, ([{url: tab}]) => {
-				let url = new URL(tab);
-				new Promise((resolve) => {
-					if (/[^\/]+(jpeg|jpg|png)($|#|\?)/g.test(tab)) resolve(tab);
-					if (url.hostname.includes("flickr.com") && /photos\/.*?\/\d+/g.test(url.pathname)) Flickr.getSize(url.pathname.match(/(?<=photos\/\w+\/)\d+/g).pop()).then((a) => resolve(a.source));
-				}).then((result) => create.dl(result));
-			});
-			break;
-	}
+		},
+	};
+	commands[a]();
 });
