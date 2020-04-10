@@ -40,7 +40,17 @@ chrome.runtime.onMessage.addListener((a, b) => {
 chrome.commands.onCommand.addListener((a) => {
 	switch(a) {
 		case "clickCBtnFB":
-			chrome.tabs.executeScript({code: `for (let btn of Array.from(document.querySelectorAll("button.layerConfirm.uiOverlayButton[type='submit']"))) btn.click();`});
+			chrome.tabs.executeScript({code: `
+				var button = document.querySelector("button.layerConfirm.uiOverlayButton[type='submit']");
+				if(button == null){
+				    button = document.querySelector("a.layerCancel[action='cancel']");
+				    var array_label = document.querySelectorAll("label.uiInputLabelLabel");
+				    var array_length = array_label.length;
+				    var last_label = array_label[array_length - 1];
+				    last_label.click();
+				}
+				button.click();
+				`});
 			break;
 		case "dlShelf":
 			chrome.storage.local.get("dlShelf", ({dlShelf: a}) => {
