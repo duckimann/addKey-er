@@ -75,18 +75,4 @@ chrome.commands.onCommand.addListener((a) => {
 		},
 	};
 	commands[a]();
-	switch(a) {
-		case "clickCBtnFB":
-			
-			break;
-		case "dlShelf":
-			
-			break;
-		case "flickrPhotoNewTab":
-			
-			break;
-		case "dl":
-			
-			break;
-	}
 });
