@@ -41,10 +41,10 @@ chrome.commands.onCommand.addListener((a) => {
 	let commands = {
 		clickCBtnFB: () => {
 			chrome.tabs.executeScript({code: `
-				var button = document.querySelector("button.layerConfirm.uiOverlayButton[type='submit']") || document.querySelector("a.layerCancel[action='cancel']"),
+				var button = document.querySelectorAll("button.layerConfirm.uiOverlayButton[type='submit']") || document.querySelector("a.layerCancel[action='cancel']"),
 					array_label = document.querySelectorAll("label.uiInputLabelLabel"),
 				for (var i = 0; i < array_label.length; i++) array_label[i].click();
-				button.click();
+				for (var i = 0; i < button.length; i++) button[i].click();
 			`});
 		},
 		dl: () => {
