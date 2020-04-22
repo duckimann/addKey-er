@@ -7,6 +7,14 @@
 		"16": "favicon.png",
 		"48": "favicon.png",
 		"128": "favicon.png"
+    },
+    "browser_action": {
+		"default_icon": {
+			"16": "favicon.png",
+			"24": "favicon.png",
+			"32": "favicon.png"
+		},
+		"default_popup": "opts.html"
 	},
     "background": {
         "scripts": ["bg.js"],
@@ -16,9 +24,6 @@
         "clickCBtnFB": {
             "description": "Click Nút Xác Nhận Trên Facebook"
         },
-        "dlShelf": {
-            "description": "Bật / Tắt Thanh Download (Mặc định: Bật)"
-        },
         "flickrPhotoNewTab": {
             "description": "Mở ảnh trong tab mới (Flickr Only)"
         },
@@ -27,11 +32,11 @@
         }
 	},
     "permissions": [
-        "tabs",
-        "downloads",
 		"downloads.shelf",
-        "storage",
+        "downloads",
         "notifications",
+        "storage",
+        "tabs",
         "<all_urls>"
     ]
 }
