@@ -26,6 +26,7 @@ chrome.commands.onCommand.addListener((a) => {
 								isMute.parentElement.querySelectorAll("li")[key - 1].querySelector("input").click();
 								document.removeEventListener("keydown", listenKey);
 								document.getElementById("customF").remove();
+								document.querySelector(".selected[class*='layer']").click();
 							}
 						};
 					if (isMute) {
@@ -37,8 +38,8 @@ chrome.commands.onCommand.addListener((a) => {
 						document.addEventListener("keypress", listenKey);
 					} else {
 						Array.from(document.querySelectorAll(".uiInputLabel > input[type='checkbox']")).forEach((item, index) => {item.checked = !!fbPopupSetting[index];});
+						document.querySelector(".selected[class*='layer']").click();
 					}
-					document.querySelector(".selected[class*='layer']").click();
 				`;
 				chrome.tabs.executeScript({code: inject});
 
