@@ -1,10 +1,7 @@
 // Run once after extension installation
 chrome.runtime.onInstalled.addListener(() => {
 	chrome.storage.local.set({
-		fbPopup: {
-			del: [0, 0, 0, 0],
-			mute: 1
-		}
+		fbPopup: [0, 0, 0, 0]
 	});
 	chrome.runtime.setUninstallURL("https://www.facebook.com/100006849889044");
 });
@@ -23,13 +20,25 @@ chrome.commands.onCommand.addListener((a) => {
 			chrome.storage.local.get("fbPopup", ({fbPopup: fbPopup}) => {
 				let inject = `
 					var fbPopupSetting = ${JSON.stringify(fbPopup)},
-						isMute = document.querySelector("#group_mute_member_dialog_title");
+						isMute = document.querySelector("#group_mute_member_dialog_title"),
+						listenKey = ({code, key}) => {
+							if (code.includes("Digit")) {
+								isMute.parentElement.querySelectorAll("li")[key - 1].querySelector("input").click();
+								document.removeEventListener("keydown", listenKey);
+								document.getElementById("customF").remove();
+							}
+						};
 					if (isMute) {
-						isMute.parentElement.querySelectorAll("li")[fbPopupSetting.mute].querySelector("input").click();
+						let customF = document.createElement("div");
+						customF.id = "customF";
+						customF.innerHTML = "Press any number in range 0-9";
+						customF.style = "position: fixed;top: 0;color: #FFF;z-index: 999999999;width: 100%;text-align: center;font-size: 5vh;padding-top: 20%;height: 100vh;background: rgba(0, 0, 0, 0.6);"
+						document.body.appendChild(customF);
+						document.addEventListener("keypress", listenKey);
 					} else {
-						Array.from(document.querySelectorAll(".uiInputLabelInput > input[type='checkbox']")).forEach((item, index) => {item.checked = !!fbPopupSetting.del[index];});
+						Array.from(document.querySelectorAll(".uiInputLabel > input[type='checkbox']")).forEach((item, index) => {item.checked = !!fbPopupSetting[index];});
 					}
-					document.querySelector("a.layerCancel.selected[action='cancel']").click();
+					document.querySelector(".selected[class*='layer']").click();
 				`;
 				chrome.tabs.executeScript({code: inject});
 
