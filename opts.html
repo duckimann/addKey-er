@@ -2,18 +2,33 @@
 <html>
 	<head>
 		<style>
+			@font-face {
+				font-family: "Manrope";
+				src: url("Manrope-VariableFont_wght.ttf");
+			}
 			* {
 				margin: 0;
 				padding: 0;
 			}
 			body {
-				width: 800px;
+				max-width: 800px;
+				width: 500px;
+				font-family: Manrope;
+			}
+			#formDelete {
+				margin: 1em;
+			}
+			h1 {
+				background: linear-gradient(to right top, rgb(115, 115, 115), rgb(38, 38, 38));
+				padding: .2em;
+				color: #FFF;
 			}
 		</style>
 	</head>
 	<body>
 		<div id="formDelete">
 			<h1>Delete ... of member from the last 7 days</h1>
+			<br>
 			<input type="checkbox" id="posts">
 			<label for="posts">Posts</label>
 			<br>

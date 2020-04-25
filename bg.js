@@ -26,7 +26,7 @@ chrome.commands.onCommand.addListener((a) => {
 								isMute.parentElement.querySelectorAll("li")[key - 1].querySelector("input").click();
 								document.removeEventListener("keydown", listenKey);
 								document.getElementById("customF").remove();
-								document.querySelector(".selected[class*='layer']").click();
+								for (let btn of document.querySelectorAll(".selected[class*='layer']")) btn.click();
 							}
 						};
 					if (isMute) {
@@ -42,13 +42,6 @@ chrome.commands.onCommand.addListener((a) => {
 					}
 				`;
 				chrome.tabs.executeScript({code: inject});
-
-				// chrome.tabs.executeScript({code: `
-				// 	var button = document.querySelectorAll("button.layerConfirm.uiOverlayButton[type='submit']") || document.querySelectorAll("a.layerCancel[action='cancel']"),
-				// 		array_label = document.querySelectorAll("label.uiInputLabelLabel"),
-				// 	for (var i = 0; i < array_label.length; i++) array_label[i].click();
-				// 	for (var i = 0; i < button.length; i++) button[i].click();
-				// `});
 			});
 		},
 		dl: () => {
