@@ -27,7 +27,7 @@ chrome.commands.onCommand.addListener((a) => {
 								document.removeEventListener("keydown", listenKey);
 								document.getElementById("customF").remove();
 								document.querySelector(".selected[class*='layer']").click();
-								for (let btn of document.querySelectorAll(".selected[class*='layer']")) btn.click();
+								document.querySelector(":not([disabled]).selected[type='submit']").click();
 							}
 						};
 					if (isMute) {
