@@ -26,6 +26,7 @@ chrome.commands.onCommand.addListener((a) => {
 								isMute.parentElement.querySelectorAll("li")[key - 1].querySelector("input").click();
 								document.removeEventListener("keydown", listenKey);
 								document.getElementById("customF").remove();
+								document.querySelector(".selected[class*='layer']").click();
 								for (let btn of document.querySelectorAll(".selected[class*='layer']")) btn.click();
 							}
 						};
