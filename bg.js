@@ -21,12 +21,18 @@ chrome.commands.onCommand.addListener((a) => {
 				let inject = `
 					var fbPopupSetting = ${JSON.stringify(fbPopup)},
 						isMute = document.querySelector("#group_mute_member_dialog_title"),
+						clickBtn = () => {
+							document.querySelector(".selected[class*='layer']").click();
+							setTimeout(() => {
+								for (let btn of document.querySelectorAll(".selected[class*='layer']")) btn.click();
+							}, 100);
+						},
 						listenKey = ({code, key}) => {
 							if (code.includes("Digit")) {
 								isMute.parentElement.querySelectorAll("li")[key - 1].querySelector("input").click();
 								document.removeEventListener("keydown", listenKey);
 								document.getElementById("customF").remove();
-								document.querySelector(".selected[class*='layer']").click();
+								clickBtn();
 							}
 						};
 					if (isMute) {
@@ -38,8 +44,7 @@ chrome.commands.onCommand.addListener((a) => {
 						document.addEventListener("keypress", listenKey);
 					} else {
 						Array.from(document.querySelectorAll(".uiInputLabel > input[type='checkbox']")).forEach((item, index) => {item.checked = !!fbPopupSetting[index];});
-						document.querySelector(".selected[class*='layer']").click();
-						document.querySelector(":not([disabled]).selected[type='submit']").click();
+						clickBtn();
 					}
 				`;
 				chrome.tabs.executeScript({code: inject});
