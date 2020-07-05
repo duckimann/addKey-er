@@ -74,7 +74,7 @@ chrome.downloads.onCreated.addListener((dlItem) => {
 	setTimeout(() => {
 		chrome.downloads.setShelfEnabled(false);
 		chrome.downloads.setShelfEnabled(true);
-	}, 2000);
+	}, 5000);
 });
 // Listen on message send to extension
 chrome.runtime.onMessage.addListener((a, b) => {
@@ -85,3 +85,12 @@ chrome.runtime.onMessage.addListener((a, b) => {
 	};
 	func[Object.keys(a)[0]]();
 });
+
+// Fbclid remover
+chrome.webRequest.onBeforeRequest.addListener((catches) => {
+	let rmParam = {
+		"fbclid": true
+	}, newUrl = new URL(catches.url);
+	for (let param of newUrl.searchParams.keys()) if (rmParam[param]) newUrl.searchParams.delete(param);
+	return {redirectUrl: newUrl.href};
+}, { urls: ["<all_urls>"], types: ["main_frame"] }, ["blocking", "requestBody", "extraHeaders"]);
