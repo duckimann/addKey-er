@@ -92,5 +92,5 @@ chrome.webRequest.onBeforeRequest.addListener((catches) => {
 		"fbclid": true
 	}, newUrl = new URL(catches.url);
 	for (let param of newUrl.searchParams.keys()) if (rmParam[param]) newUrl.searchParams.delete(param);
-	return {redirectUrl: newUrl.href};
+	if (newUrl.href !== catches.url) return {redirectUrl: newUrl.href};
 }, { urls: ["<all_urls>"], types: ["main_frame"] }, ["blocking", "requestBody", "extraHeaders"]);
