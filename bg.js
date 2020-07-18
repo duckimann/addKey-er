@@ -55,7 +55,7 @@ chrome.commands.onCommand.addListener((a) => {
 				let url = new URL(tab);
 				new Promise((resolve) => {
 					if (/[^\/]+(jpeg|jpg|png)($|#|\?)/g.test(tab)) resolve(tab);
-					if (url.hostname.includes("flickr.com") && /photos\/.*?\/\d+/g.test(url.pathname)) Flickr.getSize(url.pathname.match(/(?<=photos\/\w+\/)\d+/g).pop()).then((a) => resolve(a.source));
+					if (url.hostname.includes("flickr.com") && /photos\/.*?\/\d+/g.test(url.pathname)) Flickr.getSize(url.pathname.match(/(?<=photos\/[^\/]+\/)\d+/g).pop()).then((a) => resolve(a.source));
 				}).then((result) => create.dl(result));
 			});
 		},
@@ -63,7 +63,7 @@ chrome.commands.onCommand.addListener((a) => {
 			console.log("New Tab");
 			chrome.tabs.query({active: true}, ([{url: tab}]) => {
 				let url = new URL(tab);
-				if (url.hostname.includes("flickr.com") && /photos\/.*?\/\d+/g.test(url.pathname)) Flickr.getSize(url.pathname.match(/(?<=photos\/\w+\/)\d+/g).pop()).then((a) => create.newTab(a.source));
+				if (url.hostname.includes("flickr.com") && /photos\/.*?\/\d+/g.test(url.pathname)) Flickr.getSize(url.pathname.match(/(?<=photos\/[^\/]+\/)\d+/g).pop()).then((a) => create.newTab(a.source));
 			});
 		},
 	};
